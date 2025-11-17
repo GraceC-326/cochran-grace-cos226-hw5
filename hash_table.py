@@ -24,8 +24,11 @@ class Node: # To be used for the linked list insertion method
 
 def hashFunct(stringData):
     # does some mathematics to make a hash key, supposedly with the use of prime numbers
-    key = (len(stringData) * ord(stringData[0])) + 761
-    return key
+	hashPrime = 5381
+	for i in stringData:
+		hashPrime = ((hashPrime << 5) + hashPrime) + ord(i)
+	key = hashPrime
+	return key
 
 def linearInsert(table, index, data): # inserts data into a hash table through linear probing, returning the amount of collisions and empty spots filled once a place has been found for the data to be stored in the table. 
 	placeFound = False
@@ -91,7 +94,7 @@ def main():
 			counter += 1
 	
 	end = time.time()
-	print("Commit One(1). Initial creation with linear probing insert method.\n")
+	print("Commit Two(2). Improved upon hash key calculating function. Linear probing insert method continues.\n")
 	print(f"Hash table creation sucessful, went through loop {counter} times.")
 	print(f"Construction of hash tables took {end-start:0.2f} seconds.")
 	print(f"The title-oriented hash table encountered {titleColTotal} collisions, while the quote-oriented hash table encountered {quoteColTotal} collisions.")
