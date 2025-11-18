@@ -46,10 +46,30 @@ def linearInsert(table, index, data): # inserts data into a hash table through l
 			table[index] = data
 			placeFound = True
 			emptySpots += 1
+
 	return collisions, emptySpots
 
-def linkInsert(table, index, node): # inserts data into a hash table through linked list insertion, adding to an index's linked list when a collision occurs, returning the amount of collisions and empty spots afterwards. 
-	pass
+def linkInsert(table, index, node): # inserts data into a hash table through linked list insertion, adding to an index's linked list when a collision occurs, returning the amount of collisions afterwards.
+	collisions = 0
+
+	if table[index] != None:
+		collisions += 1
+		currNode = table[index]
+		while currNode.next != None:
+			collisions += 1
+			currNode = currNode.next
+		currNode.next = node
+	else:
+		table[index] = node
+
+	return collisions
+
+def linkWasteCheck(table):
+	emptySpaces = 0
+	for i in table:
+		if i == None:
+			emptySpaces += 1
+	return emptySpaces
 
 
 def main():
@@ -64,7 +84,6 @@ def main():
 	titleWasteTotal = size
 	quoteColTotal = 0
 	quoteWasteTotal = size
-	totalWaste = 0
 
 	start = time.time()
 	with open(file, "r", newline = "", encoding = "utf8") as csvfile:
@@ -82,21 +101,23 @@ def main():
 			quoteIndex = quoteKey % len(hashQuoteTable)
 
 			# inserting the DataItems into the hash tables
-			titleCollisions, titleFilled = linearInsert(hashTitleTable, titleIndex, movie) 
-			quoteCollisions, quoteFilled = linearInsert(hashQuoteTable, quoteIndex, movie)
-			# linkInsert(hashTitleTable, titleIndex, Node(movie)) 
-			# linkInsert(hashQuoteTable, quoteIndex, Node(movie))
+			# titleCollisions, titleFilled = linearInsert(hashTitleTable, titleIndex, movie) 
+			# quoteCollisions, quoteFilled = linearInsert(hashQuoteTable, quoteIndex, movie)
+			titleCollisions = linkInsert(hashTitleTable, titleIndex, Node(movie)) 
+			quoteCollisions = linkInsert(hashQuoteTable, quoteIndex, Node(movie))
 	
 			titleColTotal += titleCollisions # updating the total collisions and empty indexes
 			quoteColTotal += quoteCollisions
-			titleWasteTotal -= titleFilled
-			quoteWasteTotal -= quoteFilled
+			# titleWasteTotal -= titleFilled
+			# quoteWasteTotal -= quoteFilled
 			counter += 1
+		titleWasteTotal = linkWasteCheck(hashTitleTable)
+		quoteWasteTotal = linkWasteCheck(hashQuoteTable)
 	
 	end = time.time()
-	print("Commit Two(2). Improved upon hash key calculating function. Linear probing insert method continues.\n")
+	print("Commit Three(3). Changed insert method to linked list insert.\n")
 	print(f"Hash table creation sucessful, went through loop {counter} times.")
-	print(f"Construction of hash tables took {end-start:0.2f} seconds.")
+	print(f"Construction of the hash tables took {end-start:0.2f} seconds.")
 	print(f"The title-oriented hash table encountered {titleColTotal} collisions, while the quote-oriented hash table encountered {quoteColTotal} collisions.")
 	print(f"The amount of wasted space from the title-oriented hash table was {titleWasteTotal} indexes, while the quote-oriented hash table wasted {quoteWasteTotal} indexes.")
 
