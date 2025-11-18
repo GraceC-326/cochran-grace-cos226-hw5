@@ -1,5 +1,6 @@
 import csv
 import time
+import math
 
 # Grace Cochran
 # COS 226 Hw 5
@@ -71,23 +72,49 @@ def linkWasteCheck(table):
 			emptySpaces += 1
 	return emptySpaces
 
+def nextPrime(num): # finds the next prime number greater than a given number
+	primeFound = False
+	nextNum = num
+
+	while(primeFound == False):
+		primeFound = True
+		nextNum += 1
+		for i in range(2, int(math.sqrt(nextNum)) + 1):
+			if nextNum % i == 0:
+				primeFound = False
+				break
+				
+	return nextNum
+
 
 def main():
 
 	file = "MOCK_DATA.csv"
 	counter = 0
 
-	size = 15000 # initializing the hash tables and setting parameters 
-	hashTitleTable = [None] * size
-	hashQuoteTable = [None] * size
+	size = 0 # initializing the hash tables and setting parameters 
+	loadFactor = 0.75
 	titleColTotal = 0
-	titleWasteTotal = size
 	quoteColTotal = 0
-	quoteWasteTotal = size
 
 	start = time.time()
 	with open(file, "r", newline = "", encoding = "utf8") as csvfile:
-		data = csv.reader(csvfile) # reading and making a dataItem for each read row
+		data = csv.reader(csvfile) # initializing and reading the csv file's data 
+
+		for row in data: # determining an optimal size for the hash tables.
+			size += 1
+		size -= 1 
+		size = size / loadFactor
+		size = nextPrime(math.ceil(size))
+	
+	with open(file, "r", newline = "", encoding = "utf8") as csvfile:
+		data = csv.reader(csvfile)
+
+		hashTitleTable = [None] * size
+		hashQuoteTable = [None] * size
+		titleWasteTotal = size
+		quoteWasteTotal = size
+
 		for row in data:
 			# print(row)
 			if counter == 0:
@@ -115,7 +142,7 @@ def main():
 		quoteWasteTotal = linkWasteCheck(hashQuoteTable)
 	
 	end = time.time()
-	print("Commit Three(3). Changed insert method to linked list insert.\n")
+	print("Commit Four(4). Added a method to find an optimal size for the hash tables.\n")
 	print(f"Hash table creation sucessful, went through loop {counter} times.")
 	print(f"Construction of the hash tables took {end-start:0.2f} seconds.")
 	print(f"The title-oriented hash table encountered {titleColTotal} collisions, while the quote-oriented hash table encountered {quoteColTotal} collisions.")
