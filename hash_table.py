@@ -25,9 +25,9 @@ class Node: # To be used for the linked list insertion method
 
 def hashFunct(stringData):
     # does some mathematics to make a hash key, supposedly with the use of prime numbers
-	hashPrime = 5381
+	hashPrime = 3919 # 5381
 	for i in stringData:
-		hashPrime = ((hashPrime << 5) + hashPrime) + ord(i)
+		hashPrime = (((hashPrime << 6) + (hashPrime << 16)) + ord(i)) - hashPrime
 	key = hashPrime
 	return key
 
@@ -142,7 +142,7 @@ def main():
 		quoteWasteTotal = linkWasteCheck(hashQuoteTable)
 	
 	end = time.time()
-	print("Commit Four(4). Added a method to find an optimal size for the hash tables.\n")
+	print("Commit Five(5). Changed and improved upon the hash key calculating function once again.\n")
 	print(f"Hash table creation sucessful, went through loop {counter} times.")
 	print(f"Construction of the hash tables took {end-start:0.2f} seconds.")
 	print(f"The title-oriented hash table encountered {titleColTotal} collisions, while the quote-oriented hash table encountered {quoteColTotal} collisions.")
@@ -151,3 +151,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
